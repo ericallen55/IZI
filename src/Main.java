@@ -19,12 +19,21 @@ public class Main {
 
         feedOnHand.put(FoodTypesEnum.VEGGIES, 100);
 
-        newFeed(10, FoodTypesEnum.MEAT);
+        newFeed(100, FoodTypesEnum.MEAT);
         newFeed(100, FoodTypesEnum.VEGGIES);
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, - 1);
 
         feedAnimal(50, new Date(), "Bob");
         feedAnimal(10, new Date(), "Simba");
         feedAnimal(20, new Date(), "Simba");
+        feedAnimal(10, cal.getTime(), "Simba");
+        feedAnimal(10, cal.getTime(), "Bob");
+
+        printAvgFeedPerDay();
+
+        printAvgFeedingTimesPerDay();
     }
 
 
@@ -69,5 +78,41 @@ public class Main {
         else{
             System.out.println("Sorry that animal is an imposter catch it!!");
         }
+    }
+
+    public static void printAvgFeedPerDay(){
+        Map<SpeciesEnum, HashMap> report = new HashMap<>();
+        animals.forEach((name, species) -> {
+            Map<String, Integer> fedPerDay = new HashMap<>();
+            int totalAmountOfFood = 0;
+            int totalTimesFed = 0;
+            Map<Integer, Integer> days = new HashMap<Integer, Integer>();
+            for (FeedAction feedAction : feedingRecord) {
+                Calendar cal = Calendar.getInstance();
+
+                if(feedAction.getName() == name){
+                    totalAmountOfFood += feedAction.getQuantity();
+                    cal.setTime(feedAction.getDate());
+                    days.put(cal.get(Calendar.DAY_OF_YEAR), 0);
+                    totalTimesFed++;
+                }
+            }
+            if(days.size() > 0){
+                System.out.println(name + " was feed " + totalAmountOfFood / days.size() + " kg per day on average");
+                fedPerDay.put(name, totalTimesFed / days.size());
+            }
+        });
+    }
+
+    public static void printAvgFeedingTimesPerDay(){
+        animals.forEach((name, species) -> {
+            Map<String, Integer>feeding = new HashMap<>();
+            for (FeedAction feedAction : feedingRecord) {
+
+            }
+        });
+
+
+
     }
 }
