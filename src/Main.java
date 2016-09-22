@@ -1,12 +1,15 @@
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class Main {
     private static Map<SpeciesEnum, FoodTypesEnum> whatASpeciesEats = new HashMap<>();
     private static Map<String, SpeciesEnum> animals = new HashMap<>();
     private static Map<FoodTypesEnum, Integer> feedOnHand = new HashMap<>();
+    private static Map<FoodTypesEnum, Integer> waste = new HashMap<>();
     private static List<FeedAction> feedingRecord = new ArrayList<>();
 
-    private static int minimumFoodQuantity = 10;
+    private static int minimumFoodQuantity = 100;
 
     public static void main(String[] args) {
         whatASpeciesEats.put(SpeciesEnum.ELEPHANT, FoodTypesEnum.VEGGIES);
@@ -34,6 +37,9 @@ public class Main {
         feedAnimal(1, new Date(), "Sally");
 
         printAvgFeedPerDay();
+
+        takeInventory(FoodTypesEnum.MEAT, 40);
+        takeInventory(FoodTypesEnum.VEGGIES, 150);
     }
 
 
@@ -59,7 +65,7 @@ public class Main {
             FoodTypesEnum foodType = whatASpeciesEats.get(animals.get(name));
 
             if(feedOnHand.get(foodType) <= minimumFoodQuantity){
-                //order more
+                System.out.println("Making REST call to vendor for more " + foodType);
             }
 
             if(feedOnHand.get(foodType) < quantity){
@@ -119,6 +125,18 @@ public class Main {
             System.out.println(SpeciesEnum);
             list.forEach(item -> System.out.println("  " + item));
         });
+    }
 
+    //This requirement needs to be flushed out.  I should really keep track of dates of the inventories
+    //and report on that.
+    private static void takeInventory(FoodTypesEnum foodType, Integer quantity){
+        if(feedOnHand.get(foodType) < quantity){
+            System.out.println(foodType + " is in error we really have " + feedOnHand.get(foodType) + " Kg");
+        }
+        else{
+            waste.put(foodType, feedOnHand.get(foodType) - quantity);
+            feedOnHand.put(foodType, quantity);
+            System.out.println("We wasted " + waste.get(foodType) + " Kg of " + foodType);
+        }
     }
 }
