@@ -28,12 +28,12 @@ public class Main {
         feedAnimal(50, new Date(), "Bob");
         feedAnimal(10, new Date(), "Simba");
         feedAnimal(20, new Date(), "Simba");
+        feedAnimal(10, new Date(), "Zebra");
         feedAnimal(10, cal.getTime(), "Simba");
         feedAnimal(10, cal.getTime(), "Bob");
+        feedAnimal(1, new Date(), "Sally");
 
         printAvgFeedPerDay();
-
-        printAvgFeedingTimesPerDay();
     }
 
 
@@ -81,12 +81,12 @@ public class Main {
     }
 
     public static void printAvgFeedPerDay(){
-        Map<SpeciesEnum, HashMap> report = new HashMap<>();
+        Map<SpeciesEnum, List<String>> report = new HashMap<>();
+        System.out.println("Feeding averages");
         animals.forEach((name, species) -> {
-            Map<String, Integer> fedPerDay = new HashMap<>();
             int totalAmountOfFood = 0;
             int totalTimesFed = 0;
-            Map<Integer, Integer> days = new HashMap<Integer, Integer>();
+            Map<Integer, Integer> days = new HashMap<>();
             for (FeedAction feedAction : feedingRecord) {
                 Calendar cal = Calendar.getInstance();
 
@@ -98,21 +98,27 @@ public class Main {
                 }
             }
             if(days.size() > 0){
-                System.out.println(name + " was feed " + totalAmountOfFood / days.size() + " kg per day on average");
-                fedPerDay.put(name, totalTimesFed / days.size());
+                System.out.println("   " + name + " was feed " + totalAmountOfFood / days.size() + " kg per day on average");
+                float timesFedPerDay = (float)totalTimesFed / days.size();
+
+                if(report.get(species) == null){
+                    report.put(species, new ArrayList<String>());
+                }
+
+                List<String> list = report.get(species);
+                list.add(name + " was fed " + timesFedPerDay + " times per day on average");
             }
         });
+
+        printTimesPerDayReport(report);
     }
 
-    public static void printAvgFeedingTimesPerDay(){
-        animals.forEach((name, species) -> {
-            Map<String, Integer>feeding = new HashMap<>();
-            for (FeedAction feedAction : feedingRecord) {
-
-            }
+    public static void printTimesPerDayReport(Map<SpeciesEnum, List<String>> report){
+        System.out.println();
+        report.forEach((SpeciesEnum, list) -> {
+            System.out.println(SpeciesEnum);
+            list.forEach(item -> System.out.println("  " + item));
         });
-
-
 
     }
 }
